@@ -1,0 +1,22 @@
+server:
+  port: 8081
+  servlet:
+    session:
+      cookie:
+        name: UISESSIONCOUPON
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: b7fb29a538bb19b09365
+            client-secret: 2fbfd22e69e61d873bad55143538770748a76d3a
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
