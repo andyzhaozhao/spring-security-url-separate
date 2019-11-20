@@ -3,6 +3,7 @@ package oauth2.authorizationserver.simple.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,16 +13,23 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.security.KeyPair;
 
 @Profile("simple")
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
+    private KeyPair keyPair;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -41,6 +49,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         security.allowFormAuthenticationForClients();
         // 解决OPTION /oauth/token 请求跨域问题
         security.addTokenEndpointAuthenticationFilter(new CorsFilter(corsConfigurationSource()));
+    }
+
+    public AuthorizationServerConfig(KeyPair keyPair) throws Exception {
+        this.keyPair = keyPair;
     }
 
     /**
@@ -83,7 +95,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        super.configure(endpoints);
+        endpoints.accessTokenConverter(jwtAccessTokenConverter());
+        endpoints.tokenStore(jwtTokenStore());
         //注入authenticationManager来支持 password grant type
         endpoints.authenticationManager(authenticationManager);
     }
@@ -111,4 +124,29 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
+
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setTokenStore(jwtTokenStore());
+        defaultTokenServices.setSupportRefreshToken(true);
+        return defaultTokenServices;
+    }
+
+    @Bean
+    public CustomJwtAccessTokenConverter jwtAccessTokenConverter() {
+        CustomJwtAccessTokenConverter converter = new CustomJwtAccessTokenConverter();
+        converter.setKeyPair(this.keyPair);
+        return converter;
+    }
+
+    /**
+     * jdbc token 配置
+     */
+    @Bean
+    public TokenStore jwtTokenStore() {
+        return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
 }

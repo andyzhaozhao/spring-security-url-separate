@@ -19,9 +19,9 @@ public class GroupOneSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.requestMatchers()
-                .antMatchers("/foo/**","/login")// 配置的资源服务器接口范围包括：所有的actuator接口
+                .antMatchers("/foo/**")
                 .and().authorizeRequests().anyRequest().authenticated()
-                .and().formLogin();
+                .and().oauth2ResourceServer().jwt();
     }
 
     @Override

@@ -36,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         logger.info("SecurityConfiguration中配置HttpSecurity对象执行");
 
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/","/.well-known/jwks.json").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
         .and().formLogin();
     }
