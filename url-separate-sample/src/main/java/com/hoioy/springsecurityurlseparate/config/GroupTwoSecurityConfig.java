@@ -12,6 +12,6 @@ public class GroupTwoSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/error").permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin();
+                .and().httpBasic();
     }
 }

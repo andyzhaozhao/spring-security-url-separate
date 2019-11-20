@@ -6,27 +6,26 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-public class SampleController {
+public class FooController {
 
-    @GetMapping("/sample")
+    @GetMapping("/foo")
     public String getSample() {
-        return "getSample";
+        return "get foo";
     }
 
-    @PostMapping("/sample")
+    @PostMapping("/foo")
     public String post(HttpServletRequest request) {
-        return "post";
+        return "post foo";
     }
 
-    @DeleteMapping("/sample")
+    @DeleteMapping("/foo")
     public String delete(String sampleId) {
-        return "delete";
+        return "delete foo";
     }
 
-    @PutMapping("/sample")
-    @CrossOrigin(allowedHeaders = "*")
+    @PutMapping("/foo")
     public String put(HttpServletRequest request) {
-        return "put";
+        return "put foo";
     }
 }
 

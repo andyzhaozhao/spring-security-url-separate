@@ -1,0 +1,15 @@
+server:
+  port: 9999
+
+spring:
+  profiles:
+#    active: minimal
+    active: simple
+#    active: jdbc
+#    active: otherResourceServer
+
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
