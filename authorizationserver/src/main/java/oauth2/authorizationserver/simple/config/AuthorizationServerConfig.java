@@ -47,6 +47,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         super.configure(security);
         //支持post形式的client认证
         security.allowFormAuthenticationForClients();
+        // 默认tokenKeyAccess和checkTokenAccess对应端口权限是denyAll(),如果允许资源服务器调用这些端口，则需要覆盖默认配置
+        security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
         // 解决OPTION /oauth/token 请求跨域问题
         security.addTokenEndpointAuthenticationFilter(new CorsFilter(corsConfigurationSource()));
     }
@@ -75,10 +77,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 此Client分配的access_token的可刷新时间，要大于有效时间。超过有效时间，但是在可刷新时间范围的access_token可以刷新
                 .refreshTokenValiditySeconds(72000)
                 // 重定向URL
-                .redirectUris("http://localhost:8080/login/oauth2/code/authorizationserver")
+                .redirectUris("http://localhost:8080/login/oauth2/code/custom")
                 .additionalInformation()
-                // 此Client可以访问的资源服务器ID，每个资源服务器有一个ID。
-                .resourceIds(ResourceServerConfig.RESOURCE_ID)
                 // 此Client拥有的权限，资源服务器可以依据此处定义的权限对Client进行鉴权。
                 .authorities("ROLE_CLIENT")
                 // 此Client可以访问的资源的范围，资源服务器可以依据此处定义的范围对Client进行鉴权。

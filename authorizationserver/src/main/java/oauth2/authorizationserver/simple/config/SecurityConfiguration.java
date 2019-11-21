@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * Spring Security配置
@@ -36,15 +37,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         logger.info("SecurityConfiguration中配置HttpSecurity对象执行");
 
         http.authorizeRequests()
-                .antMatchers("/","/.well-known/jwks.json").permitAll()
+                .antMatchers("/.well-known/jwks.json").permitAll()
+                .antMatchers("/login/**", "/logout").permitAll()
+                .antMatchers("/error").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
-        .and().formLogin();
+                .and().formLogin().loginPage("/login");
+
+        http.cors();
+
+        //TODO http.csrf().disable(); csrf token配置
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring().antMatchers("/favicon.ico") ;
+        // 解决静态资源被拦截的问题
+        web.ignoring().antMatchers("/theme/**", "/js/**", "/css/**", "/images/**", "**/favicon.ico");
     }
 
     @Bean
