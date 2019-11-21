@@ -9,10 +9,6 @@
     </parent>
     <artifactId>spring-security-url-separate-sample</artifactId>
 
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

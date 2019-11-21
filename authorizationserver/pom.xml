@@ -9,7 +9,7 @@
     </parent>
     <artifactId>authorizationserver</artifactId>
     <name>authorizationserver</name>
-    <description>OAuth2认证服务器</description>
+    <description>自建OAuth2认证服务器</description>
 
     <dependencies>
         <dependency>
