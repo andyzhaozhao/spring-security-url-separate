@@ -21,7 +21,7 @@
     </properties>
     <modules>
         <module>authorizationserver</module>
-        <module>url-separate-sample</module>
+        <module>spring-security-url-separate-sample</module>
     </modules>
 
     <build>
