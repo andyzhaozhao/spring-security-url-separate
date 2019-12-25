@@ -18,7 +18,7 @@ spring:
             provider: custom
             client-name: 自建OAuth2认证服务
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8080/login/oauth2/code/custom"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           custom:
             authorization-uri: http://localhost:9999/oauth/authorize
